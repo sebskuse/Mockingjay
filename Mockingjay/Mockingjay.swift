@@ -10,24 +10,24 @@ import Foundation
 
 public enum Download: NilLiteralConvertible, Equatable {
   public init(nilLiteral: ()) {
-    self = .NoContent
+    self = .noContent
   }
   
   //Simulate download in one step
-  case Content(NSData)
+  case content(Data)
   //Simulate download as byte stream
-  case StreamContent(data:NSData, inChunksOf:Int)
+  case streamContent(data:Data, inChunksOf:Int)
   //Simulate empty download
-  case NoContent
+  case noContent
 }
 
 public func ==(lhs:Download, rhs:Download) -> Bool {
   switch(lhs, rhs) {
-  case let (.Content(lhsData), .Content(rhsData)):
-    return lhsData.isEqualToData(rhsData)
-  case let (.StreamContent(data:lhsData, inChunksOf:lhsBytes), .StreamContent(data:rhsData, inChunksOf:rhsBytes)):
-    return lhsData.isEqualToData(rhsData) && lhsBytes == rhsBytes
-  case (.NoContent, .NoContent):
+  case let (.content(lhsData), .content(rhsData)):
+    return (lhsData == rhsData)
+  case let (.streamContent(data:lhsData, inChunksOf:lhsBytes), .streamContent(data:rhsData, inChunksOf:rhsBytes)):
+    return (lhsData == rhsData) && lhsBytes == rhsBytes
+  case (.noContent, .noContent):
     return true
   default:
     return false
@@ -35,20 +35,20 @@ public func ==(lhs:Download, rhs:Download) -> Bool {
 }
 
 public enum Response : Equatable {
-  case Success(NSURLResponse, Download)
-  case Failure(NSError)
+  case success(URLResponse, Download)
+  case failure(NSError)
 }
 
 public func ==(lhs:Response, rhs:Response) -> Bool {
   switch (lhs, rhs) {
-  case let (.Failure(lhsError), .Failure(rhsError)):
+  case let (.failure(lhsError), .failure(rhsError)):
     return lhsError == rhsError
-  case let (.Success(lhsResponse, lhsDownload), .Success(rhsResponse, rhsDownload)):
+  case let (.success(lhsResponse, lhsDownload), .success(rhsResponse, rhsDownload)):
     return lhsResponse == rhsResponse && lhsDownload == rhsDownload
   default:
     return false
   }
 }
 
-public typealias Matcher = (NSURLRequest) -> (Bool)
-public typealias Builder = (NSURLRequest) -> (Response)
+public typealias Matcher = (URLRequest) -> (Bool)
+public typealias Builder = (URLRequest) -> (Response)

@@ -6,13 +6,7 @@
 //  Copyright © 2016 Cocode. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <Mockingjay/Mockingjay-Swift.h>
-
-
-@interface MockingjayURLConfiguration : NSObject
-
-@end
+#import "MockingjayURLSessionConfiguration.h"
 
 @implementation MockingjayURLConfiguration
 
