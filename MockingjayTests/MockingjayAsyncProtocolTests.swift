@@ -19,7 +19,7 @@ class MockingjayAsyncProtocolTests: XCTestCase, URLSessionDataDelegate  {
   override func setUp() {
     super.setUp()
     var protocolClasses = [AnyClass]()
-    protocolClasses.append(MockingjayProtocol)
+    protocolClasses.append(MockingjayProtocol.self)
     
     configuration = URLSessionConfiguration.default
     configuration.protocolClasses = protocolClasses
