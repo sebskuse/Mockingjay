@@ -14,32 +14,32 @@ import Mockingjay
 class URIMatcherTests : XCTestCase {
   func testExactFullURIMatches() {
     let request = URLRequest(url: URL(string: "https://api.palaverapp.com/")!)
-    XCTAssertTrue(uri("https://api.palaverapp.com/")(request:request))
+    XCTAssertTrue(uri(uri: "https://api.palaverapp.com/")(request))
   }
 
   func testExactFullPathMatches() {
     let request = URLRequest(url: URL(string: "https://api.palaverapp.com/devices")!)
-    XCTAssertTrue(uri("/devices")(request:request))
+    XCTAssertTrue(uri(uri: "/devices")(request))
   }
 
   func testExactFullURIMismatch() {
     let request = URLRequest(url: URL(string: "https://api.palaverapp.com/devices")!)
-    XCTAssertFalse(uri("https://api.palaverapp.com/notifications")(request:request))
+    XCTAssertFalse(uri(uri: "https://api.palaverapp.com/notifications")(request))
   }
 
   func testExactFullPathMismatch() {
     let request = URLRequest(url: URL(string: "https://api.palaverapp.com/devices")!)
-    XCTAssertFalse(uri("/notifications")(request:request))
+    XCTAssertFalse(uri(uri: "/notifications")(request))
   }
 
   func testVariableFullURIMatch() {
     let request = URLRequest(url: URL(string: "https://github.com/kylef/URITemplate")!)
-    XCTAssertTrue(uri("https://github.com/{username}/URITemplate")(request:request))
+    XCTAssertTrue(uri(uri: "https://github.com/{username}/URITemplate")(request))
   }
 
   func testVariablePathMatch() {
     let request = URLRequest(url: URL(string: "https://github.com/kylef/URITemplate")!)
-    XCTAssertTrue(uri("/{username}/URITemplate")(request:request))
+    XCTAssertTrue(uri(uri: "/{username}/URITemplate")(request))
   }
 }
 
@@ -48,13 +48,13 @@ class HTTPMatcherTests : XCTestCase {
     var request = URLRequest(url: URL(string: "https://api.palaverapp.com/")!)
     request.httpMethod = "PATCH"
 
-    XCTAssertTrue(http(.patch, uri: "https://api.palaverapp.com/")(request:request))
+    XCTAssertTrue(http(method:.patch, uri: "https://api.palaverapp.com/")(request))
   }
 
   func testMethodMismatch() {
     var request = URLRequest(url: URL(string: "https://api.palaverapp.com/")!)
     request.httpMethod = "GET"
 
-    XCTAssertFalse(http(.patch, uri: "https://api.palaverapp.com/")(request:request))
+    XCTAssertFalse(http(method:.patch, uri: "https://api.palaverapp.com/")(request))
   }
 }

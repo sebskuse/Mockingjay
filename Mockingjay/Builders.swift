@@ -25,7 +25,7 @@ public func http(_ status:Int = 200, headers:[String:String]? = nil, download:Do
   }
 }
 
-public func json(_ body:AnyObject, status:Int = 200, headers:[String:String]? = nil) -> (_ request:URLRequest) -> Response {
+public func json(_ body:Any, status:Int = 200, headers:[String:String]? = nil) -> (_ request:URLRequest) -> Response {
   return { (request:URLRequest) in
     do {
       let data = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions())

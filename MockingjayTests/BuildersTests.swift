@@ -16,7 +16,7 @@ class FailureBuilderTests : XCTestCase {
     let request = URLRequest(url: URL(string: "http://test.com/")!)
     let error = NSError(domain: "MockingjayTests", code: 0, userInfo: nil)
     
-    let response = failure(error)(request:request)
+    let response = failure(error)(request)
     
     XCTAssertEqual(response, Response.failure(error))
   }
@@ -24,7 +24,7 @@ class FailureBuilderTests : XCTestCase {
   func testHTTP() {
     let request = URLRequest(url: URL(string: "http://test.com/")!)
     
-    let response = http()(request: request)
+    let response = http()(request)
     
     switch response {
     case let .success(response, _):
@@ -41,7 +41,7 @@ class FailureBuilderTests : XCTestCase {
   
   func testHTTPDownloadStream() {
     let request = URLRequest(url: URL(string: "http://test.com/")!)
-    let response = http(download: .streamContent(data: Data(), inChunksOf: 1024))(request: request)
+    let response = http(download: .streamContent(data: Data(), inChunksOf: 1024))(request)
     
     switch response {
     case let .success(_, download):
@@ -58,7 +58,7 @@ class FailureBuilderTests : XCTestCase {
   
   func testJSON() {
     let request = URLRequest(url: URL(string: "http://test.com/")!)
-    let response = json(["A"])(request: request)
+    let response = json(["A"])(request)
     
     switch response {
     case let .success(response, download):
@@ -86,7 +86,7 @@ class FailureBuilderTests : XCTestCase {
     
     let data = "[\"B\"]".data(using: String.Encoding.utf8)!
     
-    let response = jsonData(data)(request: request)
+    let response = jsonData(data)(request)
     
     switch response {
     case let .success(response, download):
