@@ -12,24 +12,24 @@ import URITemplate
 // Collection of generic matchers
 
 /// Mockingjay matcher which returns true for every request
-public func everything(_ request:URLRequest) -> Bool {
+public func everything(request:URLRequest) -> Bool {
   return true
 }
 
 /// Mockingjay matcher which matches URIs
-public func uri(_ uri:String) -> (_ request:URLRequest) -> Bool {
+public func uri(uri:String) -> (_ request:URLRequest) -> Bool {
   
   return { (request:URLRequest) in
     let template = URITemplate(template:uri)
     
     if let URLString = request.url?.absoluteString {
-      if template.extract(URLString) != nil {
+      if template.extract(url: URLString) != nil {
         return true
       }
     }
     
     if let path = request.url?.path {
-      if template.extract(path) != nil {
+      if template.extract(url: path) != nil {
         return true
       }
     }
@@ -67,11 +67,11 @@ public enum HTTPMethod : CustomStringConvertible {
   }
 }
 
-public func http(_ method:HTTPMethod, uri:String) -> (_ request:URLRequest) -> Bool {
+public func http(method:HTTPMethod, uri:String) -> (_ request:URLRequest) -> Bool {
   return { (request:URLRequest) in
     if let requestMethod = request.httpMethod {
       if requestMethod == method.description {
-        return Mockingjay.uri(uri)(request)
+        return Mockingjay.uri(uri: uri)(request)
       }
     }
     

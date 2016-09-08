@@ -30,7 +30,7 @@ var stubs = [Stub]()
 
 open class MockingjayProtocol : URLProtocol {
   fileprivate static var __once: () = {
-      URLProtocol.registerClass(MockingjayProtocol)
+      URLProtocol.registerClass(MockingjayProtocol.self)
       return
     }()
 	
@@ -159,7 +159,7 @@ open class MockingjayProtocol : URLProtocol {
     }
   }
   
-  fileprivate func extractRangeFromHTTPHeaders(_ headers:[String : String]?) -> CountableRange<Int>? {
+  fileprivate func extractRangeFromHTTPHeaders(_ headers:[String : String]?) -> Range<Int>? {
     guard let rangeStr = headers?["Range"] else {
       return nil
     }
