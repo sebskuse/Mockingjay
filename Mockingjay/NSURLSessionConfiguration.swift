@@ -10,12 +10,12 @@ import Foundation
 
 extension URLSessionConfiguration {
 	/// Swizzles NSURLSessionConfiguration's default and ephermeral sessions to add Mockingjay
-	private static var __once: () {
-		let defaultSessionConfiguration = class_getClassMethod(self, #selector(URLSessionConfiguration.default))
+	fileprivate static var __once: () {
+		let defaultSessionConfiguration = class_getClassMethod(self, #selector(getter: URLSessionConfiguration.default))
 		let mockingjayDefaultSessionConfiguration = class_getClassMethod(self, #selector(URLSessionConfiguration.mockingjayDefaultSessionConfiguration))
 		method_exchangeImplementations(defaultSessionConfiguration, mockingjayDefaultSessionConfiguration)
 		
-		let ephemeralSessionConfiguration = class_getClassMethod(self, #selector(URLSessionConfiguration.ephemeral))
+		let ephemeralSessionConfiguration = class_getClassMethod(self, #selector(getter: URLSessionConfiguration.ephemeral))
 		let mockingjayEphemeralSessionConfiguration = class_getClassMethod(self, #selector(URLSessionConfiguration.mockingjayEphemeralSessionConfiguration))
 		method_exchangeImplementations(ephemeralSessionConfiguration, mockingjayEphemeralSessionConfiguration)
 	}

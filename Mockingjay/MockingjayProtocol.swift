@@ -15,7 +15,7 @@ public struct Stub : Equatable {
   let builder:Builder
   let uuid:UUID
   
-  init(matcher:Matcher, builder:Builder) {
+  init(matcher:@escaping Matcher, builder:@escaping Builder) {
     self.matcher = matcher
     self.builder = builder
     uuid = UUID()
@@ -28,15 +28,15 @@ public func ==(lhs:Stub, rhs:Stub) -> Bool {
 
 var stubs = [Stub]()
 
-public class MockingjayProtocol : URLProtocol {
-  private static var __once: () = {
+open class MockingjayProtocol : URLProtocol {
+  fileprivate static var __once: () = {
       URLProtocol.registerClass(MockingjayProtocol)
       return
     }()
 	
   // MARK: Stubs
-  private var enableDownloading = true
-  private let operationQueue = OperationQueue()
+  fileprivate var enableDownloading = true
+  fileprivate let operationQueue = OperationQueue()
   
   class func addStub(_ stub:Stub) -> Stub {
     stubs.append(stub)
@@ -48,19 +48,19 @@ public class MockingjayProtocol : URLProtocol {
   
   /// Register a matcher and a builder as a new stub
 	@discardableResult
-  public class func addStub(_ matcher:Matcher, builder:Builder) -> Stub {
+  open class func addStub(_ matcher:@escaping Matcher, builder:@escaping Builder) -> Stub {
     return addStub(Stub(matcher: matcher, builder: builder))
   }
   
   /// Unregister the given stub
-  public class func removeStub(_ stub:Stub) {
+  open class func removeStub(_ stub:Stub) {
     if let index = stubs.index(of: stub) {
       stubs.remove(at: index)
     }
   }
   
   /// Remove all registered stubs
-  public class func removeAllStubs() {
+  open class func removeAllStubs() {
     stubs.removeAll(keepingCapacity: false)
   }
   
@@ -80,15 +80,15 @@ public class MockingjayProtocol : URLProtocol {
   // MARK: NSURLProtocol
   
   /// Returns whether there is a registered stub handler for the given request.
-  override public class func canInit(with request:URLRequest) -> Bool {
+  override open class func canInit(with request:URLRequest) -> Bool {
     return stubForRequest(request) != nil
   }
   
-  override public class func canonicalRequest(for request: URLRequest) -> URLRequest {
+  override open class func canonicalRequest(for request: URLRequest) -> URLRequest {
     return request
   }
   
-  override public func startLoading() {
+  override open func startLoading() {
     if let stub = MockingjayProtocol.stubForRequest(request) {
       switch stub.builder(request) {
       case .failure(let error):
@@ -116,14 +116,14 @@ public class MockingjayProtocol : URLProtocol {
     }
   }
   
-  override public func stopLoading() {
+  override open func stopLoading() {
     self.enableDownloading = false
     self.operationQueue.cancelAllOperations()
   }
   
   // MARK: Private Methods
   
-  private func download(_ data:Data?, inChunksOfBytes bytes:Int) {
+  fileprivate func download(_ data:Data?, inChunksOfBytes bytes:Int) {
     guard let data = data else {
       client?.urlProtocolDidFinishLoading(self)
       return
@@ -135,8 +135,8 @@ public class MockingjayProtocol : URLProtocol {
   }
   
   
-  private func download(_ data:Data, fromOffset offset:Int, withMaxLength maxLength:Int) {
-    guard let queue = OperationQueue.current() else {
+  fileprivate func download(_ data:Data, fromOffset offset:Int, withMaxLength maxLength:Int) {
+    guard let queue = OperationQueue.current else {
       return
     }
     guard (offset < data.count) else {
@@ -159,7 +159,7 @@ public class MockingjayProtocol : URLProtocol {
     }
   }
   
-  private func extractRangeFromHTTPHeaders(_ headers:[String : String]?) -> Range<Int>? {
+  fileprivate func extractRangeFromHTTPHeaders(_ headers:[String : String]?) -> CountableRange<Int>? {
     guard let rangeStr = headers?["Range"] else {
       return nil
     }
@@ -169,7 +169,7 @@ public class MockingjayProtocol : URLProtocol {
 		return Range(uncheckedBounds: (lower: range[0], upper: range[1]))
   }
   
-  private func applyRangeFromHTTPHeaders(
+  fileprivate func applyRangeFromHTTPHeaders(
     _ headers:[String : String]?,
     toData data:inout Data,
     andUpdateResponse response:inout URLResponse) {
@@ -195,6 +195,6 @@ public class MockingjayProtocol : URLProtocol {
 
 extension Range {
   func httpRangeStringWithFullLength(_ fullLength:Int) -> String {
-    return "bytes " + String(self.lowerBound) + "-" + String(self.upperBound) + "/" + String(fullLength)
+    return "bytes " + String(describing: self.lowerBound) + "-" + String(describing: self.upperBound) + "/" + String(fullLength)
   }
 }

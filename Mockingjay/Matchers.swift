@@ -17,7 +17,7 @@ public func everything(_ request:URLRequest) -> Bool {
 }
 
 /// Mockingjay matcher which matches URIs
-public func uri(_ uri:String) -> (request:URLRequest) -> Bool {
+public func uri(_ uri:String) -> (_ request:URLRequest) -> Bool {
   
   return { (request:URLRequest) in
     let template = URITemplate(template:uri)
@@ -67,11 +67,11 @@ public enum HTTPMethod : CustomStringConvertible {
   }
 }
 
-public func http(_ method:HTTPMethod, uri:String) -> (request:URLRequest) -> Bool {
+public func http(_ method:HTTPMethod, uri:String) -> (_ request:URLRequest) -> Bool {
   return { (request:URLRequest) in
     if let requestMethod = request.httpMethod {
       if requestMethod == method.description {
-        return Mockingjay.uri(uri)(request: request)
+        return Mockingjay.uri(uri)(request)
       }
     }
     

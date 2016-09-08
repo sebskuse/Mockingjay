@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Download: NilLiteralConvertible, Equatable {
+public enum Download: ExpressibleByNilLiteral, Equatable {
   public init(nilLiteral: ()) {
     self = .noContent
   }
